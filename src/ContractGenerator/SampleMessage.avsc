@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "SampleMessage",
+  "namespace": "Contracts",
+  "fields": [
+    {
+      "name": "Message",
+      "type": "string"
+    }
+  ]
+}

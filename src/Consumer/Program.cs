@@ -5,6 +5,7 @@ using Consumer;
 using Contracts;
 using Contracts.Serializers;
 using MassTransit;
+using System.Diagnostics;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -22,6 +23,8 @@ builder.Services.AddOpenTelemetry()
 builder.Services.AddMassTransit(x =>
 {
     x.UsingInMemory();
+    
+    x.AddReceiveObserver<ActivityEnricherReceiveObserver>();
 
     x.AddRider(rider =>
     {
@@ -88,4 +91,31 @@ class MyAvroDeserializer<T> : IDeserializer<T>
     }
 }
 
+class ActivityEnricherReceiveObserver : IReceiveObserver
+{
+    public Task ConsumeFault<T>(ConsumeContext<T> context, TimeSpan duration, string consumerType, Exception exception) where T : class => Task.CompletedTask;
 
+    public async Task PostConsume<T>(ConsumeContext<T> context, TimeSpan duration, string consumerType) where T : class
+    {
+        await SetCustomTagsOnCurrentActivity(context.Headers);
+    }
+
+    public async Task PostReceive(ReceiveContext context) 
+    {
+        await SetCustomTagsOnCurrentActivity(context.TransportHeaders);
+    }
+
+    public Task PreReceive(ReceiveContext context) => Task.CompletedTask;
+
+    public Task ReceiveFault(ReceiveContext context, Exception exception) => Task.CompletedTask;
+
+    private static Task SetCustomTagsOnCurrentActivity(MassTransit.Headers headers)
+    {
+        var tenantId = headers.Get<string>(CustomHeaders.TenantId);
+        if (tenantId != null)
+        {
+            Activity.Current?.SetTag("custom.tenantid", "tenantId");
+        }
+        return Task.CompletedTask;
+    }
+}

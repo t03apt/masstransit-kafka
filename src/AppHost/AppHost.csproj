@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -11,11 +11,16 @@
 	<ItemGroup>
 		<PackageReference Include="Aspire.Hosting.AppHost" Version="8.*-*" />
 		<PackageReference Include="Aspire.Hosting.Kafka" Version="8.*-*" />
+		<PackageReference Include="PracticalOtel.OtelCollector.Aspire" Version="0.9.6-rc" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Consumer\Consumer.csproj" />
 		<ProjectReference Include="..\Producer\Producer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="grafana\provisioning\" />
 	</ItemGroup>
 
 </Project>

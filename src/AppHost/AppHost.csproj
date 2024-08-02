@@ -19,4 +19,8 @@
 		<ProjectReference Include="..\Producer\Producer.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="grafana\data\" />
+	</ItemGroup>
+
 </Project>

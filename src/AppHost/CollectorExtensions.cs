@@ -18,6 +18,7 @@ public static class CollectorExtensions
         return builder.AddResource(resource)
             .WithImage("grafana/grafana")
             .WithEndpoint(port: 3000, targetPort: 3000, name: "http", scheme: "http")
+            .WithBindMount("./grafana/data/", "/var/lib/grafana")
             .WithBindMount("./grafana/provisioning/", "/etc/grafana/provisioning/")
             .WithEnvironment("GF_SECURITY_ADMIN_PASSWORD", "admin")
             .WithEnvironment("GF_USERS_ALLOW_SIGN_UP", "false");
